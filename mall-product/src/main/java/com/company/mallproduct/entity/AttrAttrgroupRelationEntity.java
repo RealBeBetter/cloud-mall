@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @date 2022-10-22 01:43:10
  */
 @Data
-@TableName("pms_attr_attrgroup_relation" )
+@TableName("pms_attr_attrgroup_relation")
 public class AttrAttrgroupRelationEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
