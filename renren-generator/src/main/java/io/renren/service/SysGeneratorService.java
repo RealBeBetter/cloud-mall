@@ -36,7 +36,6 @@ public class SysGeneratorService {
     @Autowired
     private GeneratorDao generatorDao;
 
-
     public PageUtils queryList(Query query) {
         Page<?> page = PageHelper.startPage(query.getPage(), query.getLimit());
         List<Map<String, Object>> list = generatorDao.queryList(query);

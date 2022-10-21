@@ -55,7 +55,7 @@ public class DbConfig {
     }
 
     @Bean
-    @Primary
+    //@Primary
     @Conditional(MongoCondition.class)
     public GeneratorDao getMongoDBDao(MongoDBGeneratorDao mongoDBGeneratorDao) {
         mongo = true;
