@@ -12,6 +12,7 @@
         <option value="$PROJECT_DIR$/mall-common/pom.xml" />
         <option value="$PROJECT_DIR$/renren-generator/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/mall-gateway/pom.xml" />
       </list>
     </option>
   </component>
