@@ -2,10 +2,11 @@
 server:
   tomcat:
     uri-encoding: UTF-8
-    max-threads: 1000
-    min-spare-threads: 30
+    connection-timeout: 5000
+    threads:
+      max: 1000
+      min-spare: 30
   port: 8080
-  connection-timeout: 5000ms
   servlet:
     context-path: /renren-fast
 
@@ -23,8 +24,8 @@ spring:
       max-request-size: 100MB
       enabled: true
   redis:
-    open: false  # 是否开启redis缓存  true开启   false关闭
-    database: 0
+    #    open: false  # 是否开启redis缓存  true开启   false关闭
+    database: 1
     host: localhost
     port: 6379
     password:    # 密码（默认为空）
@@ -35,6 +36,12 @@ spring:
         max-wait: -1ms      # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-idle: 10      # 连接池中的最大空闲连接
         min-idle: 5       # 连接池中的最小空闲连接
+  application:
+    name: renren-fast
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
   mvc:
     throw-exception-if-no-handler-found: true
     pathmatch:
