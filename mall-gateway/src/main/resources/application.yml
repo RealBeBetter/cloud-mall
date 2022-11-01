@@ -10,3 +10,26 @@ spring:
           uri: https://www.qq.com
           predicates:
             - Query=url,qq
+
+        # 注意高精度的路由规则需要放在前面，即路径更详细的需要放在靠前的位置，否则会被上面的汇总路由覆盖
+        # 负载均衡到商品服务
+        - id: product_route
+          uri: lb://mall-product
+          predicates:
+            - Path=/api/product/**
+          # 原本访问的路径：http://localhost:10000/product/category/list/tree
+          # 实际上要访问的路径：http://localhost:88/api/product/category/list/tree
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+        # 前端项目路由请求，统一加上 /api 路径
+        - id: admin_query
+          uri: lb://renren-fast
+          # 实际上要访问的路径：http://localhost:8080/renren-fast/captha.jpg
+          # 事实上访问的路径：http://localhost:88/api/captha.jpg
+          predicates:
+            - Path=/api/**
+          # 加上过滤器，完成路径重写
+          filters:
+            - RewritePath=/api/(?<segment>.*),/renren-fast/$\{segment}
+
