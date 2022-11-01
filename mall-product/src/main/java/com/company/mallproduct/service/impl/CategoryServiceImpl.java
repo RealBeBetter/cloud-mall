@@ -39,6 +39,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 .sorted(Comparator.comparingInt(CategoryEntity::getSort)).collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteBatchIds(List<Long> catIds) {
+        // 执行逻辑删除，对应于 show_status
+        baseMapper.deleteBatchIds(catIds);
+    }
+
     /**
      * 递归查找当前菜单的所有子菜单
      * 每一步三件事：找出当前子菜单、找出下级子菜单、下级子菜单排序

@@ -69,13 +69,14 @@ public class CategoryController {
     }
 
     /**
-     * 删除
+     * 删除商品分类
      */
     @RequestMapping("/delete")
     // @RequiresPermissions("mallproduct:category:delete")
     public R delete(@RequestBody Long[] catIds) {
-        categoryService.removeByIds(Arrays.asList(catIds));
-
+        // 判断是否能执行删除，调用删除方法
+        // categoryService.removeByIds(Arrays.asList(catIds));
+        categoryService.deleteBatchIds(Arrays.asList(catIds));
         return R.ok();
     }
 
