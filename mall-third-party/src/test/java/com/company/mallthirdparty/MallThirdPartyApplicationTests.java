@@ -1,13 +1,14 @@
 package com.company.mallthirdparty;
 
 import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,7 +20,8 @@ import java.io.File;
 class MallThirdPartyApplicationTests {
 
     @Autowired
-    private OSSClient ossClient;
+    @Qualifier("ossClient")
+    private OSS ossClient;
 
     @Test
     void contextLoads() {

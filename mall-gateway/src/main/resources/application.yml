@@ -22,6 +22,14 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
+        # 配置第三方服务的转发
+        - id: third_party_route
+          uri: lb://mall-third-party
+          predicates:
+            - Path=/api/thirdparty/**
+          filters:
+            - RewritePath=/api/thirdparty/(?<segment>.*),/$\{segment}
+
         # 前端项目路由请求，统一加上 /api 路径
         - id: admin_query
           uri: lb://renren-fast
