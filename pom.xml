@@ -15,9 +15,11 @@
     <modules>
         <module>mall-common</module>
         <module>mall-coupon</module>
+        <module>mall-gateway</module>
         <module>mall-member</module>
         <module>mall-order</module>
         <module>mall-product</module>
+        <module>mall-third-party</module>
         <module>mall-ware</module>
 
         <module>renren-fast</module>
