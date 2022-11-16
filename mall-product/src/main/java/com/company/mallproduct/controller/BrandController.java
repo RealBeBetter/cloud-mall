@@ -5,9 +5,14 @@ import com.company.mallcommon.utils.R;
 import com.company.mallproduct.entity.BrandEntity;
 import com.company.mallproduct.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -29,7 +34,7 @@ public class BrandController {
      */
     @RequestMapping("/list")
     // @RequiresPermissions("mallproduct:brand:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = brandService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -41,8 +46,8 @@ public class BrandController {
      */
     @RequestMapping("/info/{brandId}")
     // @RequiresPermissions("mallproduct:brand:info")
-    public R info(@PathVariable("brandId") Long brandId){
-		BrandEntity brand = brandService.getById(brandId);
+    public R info(@PathVariable("brandId") Long brandId) {
+        BrandEntity brand = brandService.getById(brandId);
 
         return R.ok().put("brand", brand);
     }
@@ -52,9 +57,19 @@ public class BrandController {
      */
     @RequestMapping("/save")
     // @RequiresPermissions("mallproduct:brand:save")
-    public R save(@RequestBody BrandEntity brand){
-		brandService.save(brand);
-
+    public R save(@Valid @RequestBody BrandEntity brand, BindingResult result) {
+        if (result.hasErrors()) {
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            Map<String, String> errorMap = new HashMap<>(8);
+            fieldErrors.forEach(error -> {
+                // 获取错误校验的字段名
+                String field = error.getField();
+                String message = error.getDefaultMessage();
+                errorMap.putIfAbsent(field, message);
+            });
+            return R.error(400, "提交的数据不合法").put("data", fieldErrors);
+        }
+        brandService.save(brand);
         return R.ok();
     }
 
@@ -63,8 +78,8 @@ public class BrandController {
      */
     @RequestMapping("/update")
     // @RequiresPermissions("mallproduct:brand:update")
-    public R update(@RequestBody BrandEntity brand){
-		brandService.updateById(brand);
+    public R update(@RequestBody BrandEntity brand) {
+        brandService.updateById(brand);
 
         return R.ok();
     }
@@ -74,8 +89,8 @@ public class BrandController {
      */
     @RequestMapping("/delete")
     // @RequiresPermissions("mallproduct:brand:delete")
-    public R delete(@RequestBody Long[] brandIds){
-		brandService.removeByIds(Arrays.asList(brandIds));
+    public R delete(@RequestBody Long[] brandIds) {
+        brandService.removeByIds(Arrays.asList(brandIds));
 
         return R.ok();
     }
