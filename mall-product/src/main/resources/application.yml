@@ -12,7 +12,11 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
-
+    alicloud:
+      access-key: LTAI5t91pFW2nU1g7FQKyiHH
+      secret-key: jC8UmYjHBmuPlnM8eDLIMsRsH4HcQc
+      oss:
+        endpoint: https://oss-cn-hangzhou.aliyuncs.com
 # MapperScan
 # sql映射文件位置
 mybatis-plus:
