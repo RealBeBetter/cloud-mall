@@ -67,7 +67,7 @@ public class BrandController {
                 String message = error.getDefaultMessage();
                 errorMap.putIfAbsent(field, message);
             });
-            return R.error(400, "提交的数据不合法").put("data", fieldErrors);
+            return R.error(400, "提交的数据不合法").put("data", errorMap);
         }
         brandService.save(brand);
         return R.ok();
