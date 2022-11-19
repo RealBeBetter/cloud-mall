@@ -1,5 +1,6 @@
 package com.company.mallproduct.exception;
 
+import com.company.mallcommon.exception.BizCodeEnum;
 import com.company.mallcommon.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
@@ -20,10 +21,10 @@ import java.util.Map;
 @RestControllerAdvice(basePackages = "com.company.mallproduct.controller")
 public class MallExceptionControllerAdvice {
 
-    @ExceptionHandler(value = Exception.class)
-    public R handlerException(Exception exception) {
-        log.error("系统出现异常：{}，异常类型：{}", exception.getMessage(), exception.getClass());
-        return R.error();
+    @ExceptionHandler(value = Throwable.class)
+    public R handlerException(Throwable throwable) {
+        log.error("系统出现异常：{}，异常类型：{}", throwable.getMessage(), throwable.getClass());
+        return R.error(BizCodeEnum.UNKNOWN_EXCEPTION.getCode(), BizCodeEnum.VALID_EXCEPTION.getMsg());
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
@@ -33,7 +34,7 @@ public class MallExceptionControllerAdvice {
         Map<String, String> errorMap = new HashMap<>();
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         fieldErrors.forEach(fieldError -> errorMap.putIfAbsent(fieldError.getField(), fieldError.getDefaultMessage()));
-        return R.error(400, "数据校验异常").put(errorMap);
+        return R.error(BizCodeEnum.VALID_EXCEPTION.getCode(), BizCodeEnum.VALID_EXCEPTION.getMsg()).put(errorMap);
     }
 
 }
