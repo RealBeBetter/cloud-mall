@@ -2,14 +2,17 @@ package com.company.mallproduct.controller;
 
 import com.company.mallcommon.utils.PageUtils;
 import com.company.mallcommon.utils.R;
+import com.company.mallcommon.valid.AddGroup;
+import com.company.mallcommon.valid.UpdateGroup;
+import com.company.mallcommon.valid.UpdateStatusGroup;
 import com.company.mallproduct.entity.BrandEntity;
 import com.company.mallproduct.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +60,7 @@ public class BrandController {
      */
     @RequestMapping("/save")
     // @RequiresPermissions("mallproduct:brand:save")
-    public R save(@Valid @RequestBody BrandEntity brand, BindingResult result) {
+    public R save(@Validated({AddGroup.class}) @RequestBody BrandEntity brand, BindingResult result) {
         if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
             Map<String, String> errorMap = new HashMap<>(8);
@@ -78,9 +81,20 @@ public class BrandController {
      */
     @RequestMapping("/update")
     // @RequiresPermissions("mallproduct:brand:update")
-    public R update(@RequestBody BrandEntity brand) {
+    public R update(@Validated({UpdateGroup.class}) @RequestBody BrandEntity brand) {
         brandService.updateById(brand);
 
+        return R.ok();
+    }
+
+    /**
+     * 修改
+     */
+    @RequestMapping("/update/status")
+    // @RequiresPermissions("mallproduct:brand:update")
+    public R updateStatus(@Validated({UpdateStatusGroup.class}) @RequestBody BrandEntity brand) {
+        brandService.updateById(brand);
+        
         return R.ok();
     }
 
