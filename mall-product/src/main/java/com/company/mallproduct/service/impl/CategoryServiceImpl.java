@@ -1,5 +1,6 @@
 package com.company.mallproduct.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -10,6 +11,7 @@ import com.company.mallproduct.entity.CategoryEntity;
 import com.company.mallproduct.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,27 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         // 执行逻辑删除，对应于 show_status
         baseMapper.deleteBatchIds(catIds);
     }
+
+
+    @Override
+    public Long[] findCatelogPath(Long catelogId) {
+        List<Long> paths = new ArrayList<>();
+        // 找到所有的父节点
+        List<Long> parentCatePath = this.findParentCatePath(catelogId, paths);
+        CollectionUtil.reverse(parentCatePath);
+        return parentCatePath.toArray(new Long[0]);
+    }
+
+    private List<Long> findParentCatePath(Long cateId, List<Long> paths) {
+        paths.add(cateId);
+        CategoryEntity category = this.getById(cateId);
+        // 递归查找父节点，返回逆序父节点
+        if (category.getParentCid() != 0) {
+            findParentCatePath(category.getParentCid(), paths);
+        }
+        return paths;
+    }
+
 
     /**
      * 递归查找当前菜单的所有子菜单

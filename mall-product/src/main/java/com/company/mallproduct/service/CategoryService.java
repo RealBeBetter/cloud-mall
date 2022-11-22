@@ -31,5 +31,13 @@ public interface CategoryService extends IService<CategoryEntity> {
      * @param catIds 分类ID数组
      */
     void deleteBatchIds(List<Long> catIds);
+
+    /**
+     * 找出当前节点的所有路径
+     *
+     * @param catelogId 分类ID
+     * @return Long数组
+     */
+    Long[] findCatelogPath(Long catelogId);
 }
 
