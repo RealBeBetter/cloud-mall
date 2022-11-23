@@ -6,12 +6,14 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author Real
  * Date: 2022/11/23 22:17
  */
 @Configuration
+@EnableTransactionManagement
 @MapperScan("com.company.mallproduct.dao")
 public class MybatisPlusConfig {
 
