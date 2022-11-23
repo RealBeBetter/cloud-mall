@@ -1,6 +1,5 @@
 package com.company.mallproduct.controller;
 
-import com.company.mallcommon.utils.PageUtils;
 import com.company.mallcommon.utils.R;
 import com.company.mallproduct.entity.CategoryBrandRelationEntity;
 import com.company.mallproduct.service.CategoryBrandRelationService;
@@ -8,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 
 /**
@@ -19,7 +18,7 @@ import java.util.Map;
  * @date 2022-10-22 01:43:04
  */
 @RestController
-@RequestMapping("mallproduct/categorybrandrelation")
+@RequestMapping("product/categorybrandrelation")
 public class CategoryBrandRelationController {
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
@@ -27,12 +26,11 @@ public class CategoryBrandRelationController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @GetMapping("/catelog/list")
     // @RequiresPermissions("mallproduct:categorybrandrelation:list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = categoryBrandRelationService.queryPage(params);
-
-        return R.ok().put("page", page);
+    public R catelogList(@RequestParam("brandId") Long brandId){
+        List<CategoryBrandRelationEntity> relationEntities = categoryBrandRelationService.queryPageByBrandId(brandId);
+        return R.ok().put(relationEntities);
     }
 
 
@@ -53,8 +51,7 @@ public class CategoryBrandRelationController {
     @RequestMapping("/save")
     // @RequiresPermissions("mallproduct:categorybrandrelation:save")
     public R save(@RequestBody CategoryBrandRelationEntity categoryBrandRelation){
-		categoryBrandRelationService.save(categoryBrandRelation);
-
+		categoryBrandRelationService.saveRelation(categoryBrandRelation);
         return R.ok();
     }
 

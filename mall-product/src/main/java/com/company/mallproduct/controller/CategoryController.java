@@ -42,7 +42,6 @@ public class CategoryController {
     // @RequiresPermissions("mallproduct:category:info")
     public R info(@PathVariable("catId") Long catId) {
         CategoryEntity category = categoryService.getById(catId);
-
         return R.ok().put("category", category);
     }
 
@@ -53,7 +52,6 @@ public class CategoryController {
     // @RequiresPermissions("mallproduct:category:save")
     public R save(@RequestBody CategoryEntity category) {
         categoryService.save(category);
-
         return R.ok();
     }
 
@@ -63,8 +61,7 @@ public class CategoryController {
     @RequestMapping("/update")
     // @RequiresPermissions("mallproduct:category:update")
     public R update(@RequestBody CategoryEntity category) {
-        categoryService.updateById(category);
-
+        categoryService.updateCategory(category);
         return R.ok();
     }
 

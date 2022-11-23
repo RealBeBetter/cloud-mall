@@ -3,6 +3,7 @@ package com.company.mallproduct.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
@@ -14,6 +15,7 @@ import java.io.Serializable;
  * @date 2022-10-22 01:43:04
  */
 @Data
+@Accessors(chain = true)
 @TableName("pms_category_brand_relation")
 public class CategoryBrandRelationEntity implements Serializable {
     private static final long serialVersionUID = 1L;

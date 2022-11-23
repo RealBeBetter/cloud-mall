@@ -8,8 +8,11 @@ import com.company.mallcommon.utils.PageUtils;
 import com.company.mallcommon.utils.Query;
 import com.company.mallproduct.dao.CategoryDao;
 import com.company.mallproduct.entity.CategoryEntity;
+import com.company.mallproduct.service.CategoryBrandRelationService;
 import com.company.mallproduct.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,9 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+
+    @Autowired
+    private CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -27,7 +32,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 new Query<CategoryEntity>().getPage(params),
                 new QueryWrapper<>()
         );
-
         return new PageUtils(page);
     }
 
@@ -47,7 +51,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         baseMapper.deleteBatchIds(catIds);
     }
 
-
     @Override
     public Long[] findCatelogPath(Long catelogId) {
         List<Long> paths = new ArrayList<>();
@@ -55,6 +58,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         List<Long> parentCatePath = this.findParentCatePath(catelogId, paths);
         CollectionUtil.reverse(parentCatePath);
         return parentCatePath.toArray(new Long[0]);
+    }
+
+    @Transactional
+    @Override
+    public void updateCategory(CategoryEntity category) {
+        this.updateById(category);
+        // 更新冗余表的信息
+        categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
     }
 
     private List<Long> findParentCatePath(Long cateId, List<Long> paths) {
