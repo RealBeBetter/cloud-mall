@@ -1,29 +1,19 @@
-package com.company.mallproduct.entity;
+package com.company.mallproduct.vo;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
-
 /**
- * 商品属性
- *
  * @author Real
- * @email swrely@qq.com
- * @date 2022-10-22 01:43:10
+ * Date: 2022/11/29 23:53
  */
 @Data
 @Accessors(chain = true)
-@TableName("pms_attr")
-public class AttrEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class AttrRespVO {
 
     /**
      * 属性id
      */
-    @TableId
     private Long attrId;
     /**
      * 属性名
@@ -57,5 +47,17 @@ public class AttrEntity implements Serializable {
      * 快速展示【是否展示在介绍上；0-否 1-是】，在sku中仍然可以调整
      */
     private Integer showDesc;
+    /**
+     * 属性分组ID
+     */
+    private Long attrGroupId;
+    /**
+     * 所属分类名字
+     */
+    private String catelogName;
+    /**
+     * 所属分组名字
+     */
+    private String groupName;
 
 }
