@@ -4,6 +4,7 @@ import com.company.mallcommon.utils.PageUtils;
 import com.company.mallcommon.utils.R;
 import com.company.mallproduct.entity.AttrEntity;
 import com.company.mallproduct.service.AttrService;
+import com.company.mallproduct.vo.AttrRespVO;
 import com.company.mallproduct.vo.AttrVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -49,9 +50,8 @@ public class AttrController {
     @RequestMapping("/info/{attrId}")
     // @RequiresPermissions("mallproduct:attr:info")
     public R info(@PathVariable("attrId") Long attrId) {
-        AttrEntity attr = attrService.getById(attrId);
-
-        return R.ok().put("attr", attr);
+        AttrRespVO attrRespVO = attrService.getAttrInfo(attrId);
+        return R.ok().put("attr", attrRespVO);
     }
 
     /**

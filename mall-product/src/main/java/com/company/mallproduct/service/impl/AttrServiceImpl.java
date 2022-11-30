@@ -18,9 +18,11 @@ import com.company.mallproduct.entity.AttrEntity;
 import com.company.mallproduct.entity.AttrGroupEntity;
 import com.company.mallproduct.entity.CategoryEntity;
 import com.company.mallproduct.service.AttrService;
+import com.company.mallproduct.service.CategoryService;
 import com.company.mallproduct.vo.AttrRespVO;
 import com.company.mallproduct.vo.AttrVO;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,8 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     private AttrGroupDao groupDao;
     @Resource
     private CategoryDao categoryDao;
+    @Autowired
+    private CategoryService categoryService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -100,6 +104,28 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         PageUtils pageUtils = new PageUtils(page);
         pageUtils.setList(attrRespVOS);
         return pageUtils;
+    }
+
+    @Override
+    public AttrRespVO getAttrInfo(Long attrId) {
+        AttrRespVO attrRespVO = new AttrRespVO();
+        AttrEntity attrEntity = this.getById(attrId);
+        BeanUtils.copyProperties(attrEntity, attrRespVO);
+        // 查询其他需要的完整信息，包括分组信息和分类信息
+        AttrAttrgroupRelationEntity relationEntity = relationDao.selectOne(Wrappers.<AttrAttrgroupRelationEntity>lambdaQuery().eq(AttrAttrgroupRelationEntity::getAttrId, attrEntity.getAttrId()));
+        if (ObjectUtils.isNotNull(relationEntity)) {
+            attrRespVO.setAttrGroupId(relationEntity.getAttrGroupId());
+            AttrGroupEntity groupEntity = groupDao.selectById(relationEntity.getAttrGroupId());
+            attrRespVO.setGroupName(ObjectUtils.isNull(groupEntity) ? null : groupEntity.getAttrGroupName());
+        }
+        // 设置分类路径
+        Long catelogId = attrEntity.getCatelogId();
+        Long[] catelogPath = categoryService.findCatelogPath(catelogId);
+        attrRespVO.setCatelogPaths(catelogPath);
+        // 设置分类名字
+        CategoryEntity categoryEntity = categoryService.getById(catelogId);
+        attrRespVO.setCatelogName(ObjectUtils.isNull(categoryEntity) ? null : categoryEntity.getName());
+        return attrRespVO;
     }
 
 }
