@@ -2,7 +2,6 @@ package com.company.mallproduct.controller;
 
 import com.company.mallcommon.utils.PageUtils;
 import com.company.mallcommon.utils.R;
-import com.company.mallproduct.entity.AttrEntity;
 import com.company.mallproduct.service.AttrService;
 import com.company.mallproduct.vo.AttrRespVO;
 import com.company.mallproduct.vo.AttrVO;
@@ -26,9 +25,9 @@ public class AttrController {
     @Autowired
     private AttrService attrService;
 
-    @RequestMapping("/base/list/{catelogId}")
-    public R listBaseAttr(@RequestParam Map<String, Object> params, @PathVariable("catelogId") Long catelogId) {
-        PageUtils page = attrService.queryBaseAttrPage(params, catelogId);
+    @RequestMapping("/{attrType}/list/{catelogId}")
+    public R listBaseAttr(@RequestParam Map<String, Object> params, @PathVariable("catelogId") Long catelogId, @PathVariable("attrType") String type) {
+        PageUtils page = attrService.queryBaseAttrPage(params, catelogId, type);
         return R.ok().put("page", page);
     }
 
@@ -39,7 +38,6 @@ public class AttrController {
     // @RequiresPermissions("mallproduct:attr:list")
     public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = attrService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 
@@ -69,9 +67,8 @@ public class AttrController {
      */
     @RequestMapping("/update")
     // @RequiresPermissions("mallproduct:attr:update")
-    public R update(@RequestBody AttrEntity attr) {
-        attrService.updateById(attr);
-
+    public R update(@RequestBody AttrVO attr) {
+        attrService.updateAttr(attr);
         return R.ok();
     }
 

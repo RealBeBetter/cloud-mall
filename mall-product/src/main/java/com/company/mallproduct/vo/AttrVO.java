@@ -49,5 +49,8 @@ public class AttrVO {
      * 属性分组ID
      */
     private Long attrGroupId;
-
+    /**
+     * 分组为单个或多个
+     */
+    private Integer valueType;
 }

@@ -62,6 +62,10 @@ public class AttrRespVO {
     /**
      * 分类所属完整路径
      */
-    private Long[] catelogPaths;
+    private Long[] catelogPath;
+    /**
+     * 属性类型，单个或多个
+     */
+    private Integer valueType;
 
 }
