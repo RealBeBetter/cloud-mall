@@ -2,13 +2,16 @@ package com.company.mallproduct.controller;
 
 import com.company.mallcommon.utils.PageUtils;
 import com.company.mallcommon.utils.R;
+import com.company.mallproduct.entity.AttrEntity;
 import com.company.mallproduct.entity.AttrGroupEntity;
 import com.company.mallproduct.service.AttrGroupService;
+import com.company.mallproduct.service.AttrService;
 import com.company.mallproduct.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -26,13 +29,21 @@ public class AttrGroupController {
     private AttrGroupService attrGroupService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private AttrService attrService;
+
+    @GetMapping("/{attrGroupId}/attr/relation")
+    public R attrRelation(@PathVariable("attrGroupId") Long attrGroupId) {
+        List<AttrEntity> attrEntities = attrService.getRelationAttr(attrGroupId);
+        return R.ok().put(attrEntities);
+    }
 
     /**
      * 列表
      */
     @RequestMapping("/list/{catelogId}")
     // @RequiresPermissions("mallproduct:attrgroup:list")
-    public R list(@RequestParam Map<String, Object> params, @PathVariable("catelogId") Long catelogId){
+    public R list(@RequestParam Map<String, Object> params, @PathVariable("catelogId") Long catelogId) {
         // PageUtils page = attrGroupService.queryPage(params);
         PageUtils page = attrGroupService.queryPage(params, catelogId);
         return R.ok().put("page", page);
@@ -44,9 +55,9 @@ public class AttrGroupController {
      */
     @RequestMapping("/info/{attrGroupId}")
     // @RequiresPermissions("mallproduct:attrgroup:info")
-    public R info(@PathVariable("attrGroupId") Long attrGroupId){
-		AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
-		// 找出完整路径并回写
+    public R info(@PathVariable("attrGroupId") Long attrGroupId) {
+        AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
+        // 找出完整路径并回写
         Long catelogId = attrGroup.getCatelogId();
         Long[] catelogPath = categoryService.findCatelogPath(catelogId);
         attrGroup.setCatelogPath(catelogPath);
@@ -58,8 +69,8 @@ public class AttrGroupController {
      */
     @RequestMapping("/save")
     // @RequiresPermissions("mallproduct:attrgroup:save")
-    public R save(@RequestBody AttrGroupEntity attrGroup){
-		attrGroupService.save(attrGroup);
+    public R save(@RequestBody AttrGroupEntity attrGroup) {
+        attrGroupService.save(attrGroup);
 
         return R.ok();
     }
@@ -69,8 +80,8 @@ public class AttrGroupController {
      */
     @RequestMapping("/update")
     // @RequiresPermissions("mallproduct:attrgroup:update")
-    public R update(@RequestBody AttrGroupEntity attrGroup){
-		attrGroupService.updateById(attrGroup);
+    public R update(@RequestBody AttrGroupEntity attrGroup) {
+        attrGroupService.updateById(attrGroup);
 
         return R.ok();
     }
@@ -80,8 +91,8 @@ public class AttrGroupController {
      */
     @RequestMapping("/delete")
     // @RequiresPermissions("mallproduct:attrgroup:delete")
-    public R delete(@RequestBody Long[] attrGroupIds){
-		attrGroupService.removeByIds(Arrays.asList(attrGroupIds));
+    public R delete(@RequestBody Long[] attrGroupIds) {
+        attrGroupService.removeByIds(Arrays.asList(attrGroupIds));
 
         return R.ok();
     }

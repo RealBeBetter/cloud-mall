@@ -1,5 +1,6 @@
 package com.company.mallproduct.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -30,18 +31,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+/**
+ * @author Real
+ * @date 2023/02/06 20:40
+ */
 @Service("attrService")
 public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements AttrService {
 
     @Resource
-    private AttrAttrgroupRelationDao relationDao;
+    private AttrAttrgroupRelationDao attrAttrgroupRelationDao;
     @Resource
-    private AttrGroupDao groupDao;
+    private AttrGroupDao attrGroupDao;
+    @Resource
+    private AttrDao attrDao;
     @Resource
     private CategoryDao categoryDao;
     @Autowired
@@ -55,7 +62,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<AttrEntity> page = this.page(
                 new Query<AttrEntity>().getPage(params),
-                new QueryWrapper<AttrEntity>()
+                new QueryWrapper<>()
         );
 
         return new PageUtils(page);
@@ -74,7 +81,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
             // 基本属性才保存关系值，销售属性不保存
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
             relationEntity.setAttrGroupId(attr.getAttrGroupId()).setAttrId(attrEntity.getAttrId());
-            relationDao.insert(relationEntity);
+            attrAttrgroupRelationDao.insert(relationEntity);
         }
     }
 
@@ -94,15 +101,15 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         IPage<AttrEntity> page = this.page(new Query<AttrEntity>().getPage(params), queryWrapper);
         List<AttrEntity> attrEntities = page.getRecords();
         // 添加分组和分类信息
-        List<AttrRespVO> attrRespVOS = attrEntities.stream().map(attrEntity -> {
+        List<AttrRespVO> attrRespVOList = attrEntities.stream().map(attrEntity -> {
             AttrRespVO attrRespVO = new AttrRespVO();
             BeanUtils.copyProperties(attrEntity, attrRespVO);
             // 设置分类和分组的名字
             if (BASE.equalsIgnoreCase(type)) {
-                AttrAttrgroupRelationEntity relationEntity = relationDao.selectOne(Wrappers.<AttrAttrgroupRelationEntity>lambdaQuery()
+                AttrAttrgroupRelationEntity relationEntity = attrAttrgroupRelationDao.selectOne(Wrappers.<AttrAttrgroupRelationEntity>lambdaQuery()
                         .eq(AttrAttrgroupRelationEntity::getAttrId, attrEntity.getAttrId()));
                 if (ObjectUtils.isNotNull(relationEntity)) {
-                    AttrGroupEntity attrGroupEntity = groupDao.selectById(relationEntity.getAttrGroupId());
+                    AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(relationEntity.getAttrGroupId());
                     attrRespVO.setGroupName(attrGroupEntity.getAttrGroupName());
                 }
             }
@@ -115,7 +122,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         }).collect(Collectors.toList());
         // 更改查询结果集
         PageUtils pageUtils = new PageUtils(page);
-        pageUtils.setList(attrRespVOS);
+        pageUtils.setList(attrRespVOList);
         return pageUtils;
     }
 
@@ -127,10 +134,10 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         // 查询其他需要的完整信息，包括分组信息和分类信息
         if (ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() == attrEntity.getAttrType()) {
             // 基本类型设置分组信息
-            AttrAttrgroupRelationEntity relationEntity = relationDao.selectOne(Wrappers.<AttrAttrgroupRelationEntity>lambdaQuery().eq(AttrAttrgroupRelationEntity::getAttrId, attrEntity.getAttrId()));
+            AttrAttrgroupRelationEntity relationEntity = attrAttrgroupRelationDao.selectOne(Wrappers.<AttrAttrgroupRelationEntity>lambdaQuery().eq(AttrAttrgroupRelationEntity::getAttrId, attrEntity.getAttrId()));
             if (ObjectUtils.isNotNull(relationEntity)) {
                 attrRespVO.setAttrGroupId(relationEntity.getAttrGroupId());
-                AttrGroupEntity groupEntity = groupDao.selectById(relationEntity.getAttrGroupId());
+                AttrGroupEntity groupEntity = attrGroupDao.selectById(relationEntity.getAttrGroupId());
                 attrRespVO.setGroupName(ObjectUtils.isNull(groupEntity) ? null : groupEntity.getAttrGroupName());
             }
         }
@@ -158,6 +165,19 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
                     .eq(AttrAttrgroupRelationEntity::getAttrId, attrEntity.getAttrId());
             attrAttrgroupRelationService.saveOrUpdate(relationEntity, updateWrapper);
         }
+    }
+
+    @Override
+    public List<AttrEntity> getRelationAttr(Long attrGroupId) {
+        List<AttrAttrgroupRelationEntity> relationEntities = attrAttrgroupRelationService.getBaseMapper().selectList(Wrappers.<AttrAttrgroupRelationEntity>lambdaQuery()
+                .eq(AttrAttrgroupRelationEntity::getAttrGroupId, attrGroupId));
+
+        if (CollectionUtil.isEmpty(relationEntities)) {
+            return Collections.emptyList();
+        }
+
+        List<Long> attrIds = relationEntities.stream().map(AttrAttrgroupRelationEntity::getAttrId).collect(Collectors.toList());
+        return attrDao.selectBatchIds(attrIds);
     }
 
 }

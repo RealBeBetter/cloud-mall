@@ -6,6 +6,7 @@ import com.company.mallproduct.entity.AttrEntity;
 import com.company.mallproduct.vo.AttrRespVO;
 import com.company.mallproduct.vo.AttrVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,6 +18,12 @@ import java.util.Map;
  */
 public interface AttrService extends IService<AttrEntity> {
 
+    /**
+     * 查询页面
+     *
+     * @param params 参数个数
+     * @return {@link PageUtils}
+     */
     PageUtils queryPage(Map<String, Object> params);
 
     /**
@@ -36,8 +43,27 @@ public interface AttrService extends IService<AttrEntity> {
      */
     PageUtils queryBaseAttrPage(Map<String, Object> params, Long catelogId, String type);
 
+    /**
+     * 得到attr信息
+     *
+     * @param attrId attr id
+     * @return {@link AttrRespVO}
+     */
     AttrRespVO getAttrInfo(Long attrId);
 
+    /**
+     * 更新attr
+     *
+     * @param attr attr
+     */
     void updateAttr(AttrVO attr);
+
+    /**
+     * 获取关系属性表
+     *
+     * @param attrGroupId 分组ID
+     * @return {@link List}<{@link AttrEntity}>
+     */
+    List<AttrEntity> getRelationAttr(Long attrGroupId);
 }
 
