@@ -23,6 +23,7 @@ import com.company.mallproduct.entity.CategoryEntity;
 import com.company.mallproduct.service.AttrAttrgroupRelationService;
 import com.company.mallproduct.service.AttrService;
 import com.company.mallproduct.service.CategoryService;
+import com.company.mallproduct.vo.AttrGroupRelationVO;
 import com.company.mallproduct.vo.AttrRespVO;
 import com.company.mallproduct.vo.AttrVO;
 import org.springframework.beans.BeanUtils;
@@ -142,11 +143,11 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
             }
         }
         // 设置分类路径
-        Long catelogId = attrEntity.getCatelogId();
-        Long[] catelogPath = categoryService.findCatelogPath(catelogId);
-        attrRespVO.setCatelogPath(catelogPath);
+        Long cateLogId = attrEntity.getCatelogId();
+        Long[] cateLogPath = categoryService.findCatelogPath(cateLogId);
+        attrRespVO.setCatelogPath(cateLogPath);
         // 设置分类名字
-        CategoryEntity categoryEntity = categoryService.getById(catelogId);
+        CategoryEntity categoryEntity = categoryService.getById(cateLogId);
         attrRespVO.setCatelogName(ObjectUtils.isNull(categoryEntity) ? null : categoryEntity.getName());
         return attrRespVO;
     }
@@ -178,6 +179,15 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
         List<Long> attrIds = relationEntities.stream().map(AttrAttrgroupRelationEntity::getAttrId).collect(Collectors.toList());
         return attrDao.selectBatchIds(attrIds);
+    }
+
+    @Override
+    public void deleteAttrGroupRelations(List<AttrGroupRelationVO> attrGroupRelations) {
+        if (CollectionUtil.isEmpty(attrGroupRelations)) {
+            return;
+        }
+
+        attrAttrgroupRelationDao.deleteBatchRelations(attrGroupRelations);
     }
 
 }

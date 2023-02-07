@@ -3,6 +3,7 @@ package com.company.mallproduct.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.company.mallcommon.utils.PageUtils;
 import com.company.mallproduct.entity.AttrEntity;
+import com.company.mallproduct.vo.AttrGroupRelationVO;
 import com.company.mallproduct.vo.AttrRespVO;
 import com.company.mallproduct.vo.AttrVO;
 
@@ -65,5 +66,12 @@ public interface AttrService extends IService<AttrEntity> {
      * @return {@link List}<{@link AttrEntity}>
      */
     List<AttrEntity> getRelationAttr(Long attrGroupId);
+
+    /**
+     * 删除attr分组关系
+     *
+     * @param attrGroupRelations attr分组关系
+     */
+    void deleteAttrGroupRelations(List<AttrGroupRelationVO> attrGroupRelations);
 }
 

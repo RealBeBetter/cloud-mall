@@ -7,6 +7,7 @@ import com.company.mallproduct.entity.AttrGroupEntity;
 import com.company.mallproduct.service.AttrGroupService;
 import com.company.mallproduct.service.AttrService;
 import com.company.mallproduct.service.CategoryService;
+import com.company.mallproduct.vo.AttrGroupRelationVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,12 @@ public class AttrGroupController {
     public R attrRelation(@PathVariable("attrGroupId") Long attrGroupId) {
         List<AttrEntity> attrEntities = attrService.getRelationAttr(attrGroupId);
         return R.ok().put(attrEntities);
+    }
+
+    @PostMapping("/attr/relation/delete")
+    public R deleteAttrRelations(@RequestBody List<AttrGroupRelationVO> attrGroupRelations) {
+        attrService.deleteAttrGroupRelations(attrGroupRelations);
+        return R.ok();
     }
 
     /**
